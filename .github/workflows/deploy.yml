@@ -1,0 +1,44 @@
+name: Push2EC2
+
+run-name: ${{github.actor}} deploy to ec2
+
+on:
+  push:
+    branches: main
+
+jobs:  
+  deploy:
+    name: Deply | Push Backend-img to DockerHub
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout repo
+        uses: action/checkout@v4.0
+        
+      - name: Setup cloudflared
+        uses: AnimMouse/setup-cloudflared@v2
+
+      - name: Cloudflared-Version
+        run: cloudflared --version
+
+      - name: Setup cloudflared ssh-proxi
+        run: |
+          mkdir -p ~/.ssh
+          cat << 'EOF' >> ~/.ssh/config
+          Host ${{ secrets.EC2_HOST }}
+            ProxyCommand cloudflared access ssh --hostname %h
+          EOF
+          chmod 600 ~/.ssh/config
+
+
+      - name: SSH Remote Commands
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{secrets.EC2_HOST}}
+          port: ${{secrets.SSH_PORT}}
+          username: ${{secrets.SSH_USER}}
+          script: |
+            mkdir contint-ex13
+            cd ~/contint-ex13
+            echo "Success" > test.txt
+
+              
