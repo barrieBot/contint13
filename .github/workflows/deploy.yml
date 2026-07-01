@@ -30,7 +30,7 @@ jobs:
           proxy_host: ${{ secrets.EC2_HOST }}
           proxy_username: "cloudflared" 
           proxy_key: |
-            cloudflared access ssh --hostname ${{ secrets.EC2_HOST }} --header "CF-Access-Client-Id=${{ secrets.CF_CLIENT_ID }}" --header "CF-Access-Client-Secret=${{ secrets.CF_CLIENT_SECRET }}"
+            cloudflared access ssh --hostname ${{ secrets.EC2_HOST }} --header "CF-Access-Client-Id=${{ secrets.AUTH_TOKEN_ID }}" --header "CF-Access-Client-Secret=${{ secrets.AUTH_TOKEN_SECRET }}"
           
           script: |
             mkdir -p ~/contint-ex13
